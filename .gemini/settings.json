@@ -1,0 +1,39 @@
+{
+  "ide": {
+    "hasSeenNudge": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "mcpServers": {
+    "mcp-atlassian": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "JIRA_URL",
+        "-e",
+        "JIRA_USERNAME",
+        "-e",
+        "JIRA_API_TOKEN",
+        "ghcr.io/sooperset/mcp-atlassian:latest"
+      ],
+      "env": {
+        "JIRA_URL": "https://beautifulcode.atlassian.net",
+        "JIRA_USERNAME": "hemanth.kakumanu@beautifulcode.in",
+        "JIRA_API_TOKEN": "${JIRA_TOKEN}"
+      }
+    },
+    "mcp-figma": {
+      "url": "https://mcp.figma.com/v1/sse",
+      "timeout": 60000
+      // "headers": {
+      //   "Authorization": "Bearer <YOUR_FIGMA_PERSONAL_ACCESS_TOKEN>"
+      // }
+    }
+  }
+}
