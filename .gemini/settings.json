@@ -28,12 +28,8 @@
         "JIRA_API_TOKEN": "${JIRA_TOKEN}"
       }
     },
-    "mcp-figma": {
-      "url": "https://mcp.figma.com/v1/sse",
-      "timeout": 60000
-      // "headers": {
-      //   "Authorization": "Bearer <YOUR_FIGMA_PERSONAL_ACCESS_TOKEN>"
-      // }
+    "figma": {
+      "httpUrl": "https://mcp.figma.com/mcp"
     }
   }
 }
