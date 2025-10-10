@@ -176,6 +176,18 @@ export const mockProducts: Product[] = [
     reviewCount: 456,
     image: 'https://picsum.photos/300/200?random=15',
   },
+  {
+    id: 16,
+    name: 'Running Sneakers',
+    category: 'Footwear',
+    brand: 'Puma',
+    price: 79.99,
+    originalPrice: 99.99,
+    rating: 4.3,
+    reviewCount: 180,
+    image: 'https://picsum.photos/300/200?random=16',
+    discount: 20,
+  },
 ]
 
 export const categories: Category[] = [
@@ -183,8 +195,9 @@ export const categories: Category[] = [
   { name: 'Clothing', count: 2 },
   { name: 'Books', count: 2 },
   { name: 'Home & Garden', count: 2 },
-  { name: 'Sports', count: 2 },
+  { name: 'Sports', count: 1 },
   { name: 'Beauty', count: 2 },
+  { name: 'Footwear', count: 1 },
 ]
 
 export const brands: Brand[] = [
@@ -193,4 +206,5 @@ export const brands: Brand[] = [
   { name: 'Nike', count: 2 },
   { name: 'Adidas', count: 2 },
   { name: 'Sony', count: 2 },
+  { name: 'Puma', count: 1 },
 ]
