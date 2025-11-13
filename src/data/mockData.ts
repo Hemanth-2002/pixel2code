@@ -185,6 +185,7 @@ export const categories: Category[] = [
   { name: 'Home & Garden', count: 2 },
   { name: 'Sports', count: 2 },
   { name: 'Beauty', count: 2 },
+  { name: 'Shoes', count: 3 },
 ]
 
 export const brands: Brand[] = [
