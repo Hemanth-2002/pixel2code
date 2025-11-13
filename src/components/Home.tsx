@@ -30,7 +30,8 @@ import {
   Favorite,
   FavoriteBorder,
 } from "@mui/icons-material";
-import { mockProducts, categories, brands } from "../data/mockData";
+import { mockProducts, categories, brands, Product } from "../data/mockData";
+import ProductDetailModal from "./ProductDetailModal";
 
 const Home: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,6 +44,9 @@ const Home: React.FC = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) =>
@@ -359,10 +363,15 @@ const Home: React.FC = () => {
               {paginatedProducts.map((product) => (
                 <Card
                   key={product.id}
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    setIsModalOpen(true);
+                  }}
                   sx={{
                     height: "100%",
                     position: "relative",
                     transition: "all 0.3s ease-in-out",
+                    cursor: "pointer",
                     "&:hover": {
                       transform: "translateY(-8px)",
                       boxShadow: "0 12px 24px rgba(0,0,0,0.15)",
@@ -487,6 +496,12 @@ const Home: React.FC = () => {
           </Box>
         </Box>
       </Container>
+
+      <ProductDetailModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedProduct}
+      />
     </Box>
   );
 };

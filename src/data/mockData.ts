@@ -1,6 +1,7 @@
 export interface Product {
   id: number
   name: string
+  description: string
   category: string
   price: number
   originalPrice?: number
@@ -25,6 +26,7 @@ export const mockProducts: Product[] = [
   {
     id: 1,
     name: 'Wireless Bluetooth Headphones',
+    description: 'Experience crystal-clear audio with these wireless Bluetooth headphones. Perfect for music lovers and audiophiles.',
     category: 'Electronics',
     brand: 'Sony',
     price: 149.99,
@@ -37,6 +39,7 @@ export const mockProducts: Product[] = [
   {
     id: 2,
     name: 'Ultra-Comfortable Running Shoes',
+    description: 'Lightweight and breathable, these running shoes provide ultimate comfort and support for your daily runs.',
     category: 'Sports',
     brand: 'Nike',
     price: 89.99,
@@ -47,6 +50,7 @@ export const mockProducts: Product[] = [
   {
     id: 3,
     name: 'Smart Watch',
+    description: 'Stay connected and track your fitness goals with this stylish and feature-rich smart watch.',
     category: 'Electronics',
     brand: 'Apple',
     price: 299.99,
@@ -59,6 +63,7 @@ export const mockProducts: Product[] = [
   {
     id: 4,
     name: 'Organic Cotton T-Shirt',
+    description: 'Made from 100% organic cotton, this t-shirt is soft, comfortable, and environmentally friendly.',
     category: 'Clothing',
     brand: 'Adidas',
     price: 24.99,
@@ -71,6 +76,7 @@ export const mockProducts: Product[] = [
   {
     id: 5,
     name: 'Professional Camera Lens',
+    description: 'Capture stunning photos with this high-quality professional camera lens, perfect for any photography enthusiast.',
     category: 'Electronics',
     brand: 'Sony',
     price: 599.99,
@@ -81,6 +87,7 @@ export const mockProducts: Product[] = [
   {
     id: 6,
     name: 'Bestselling Fiction Novel',
+    description: 'Immerse yourself in a captivating story with this bestselling fiction novel, a must-read for book lovers.',
     category: 'Books',
     price: 14.99,
     rating: 4.6,
@@ -90,6 +97,7 @@ export const mockProducts: Product[] = [
   {
     id: 7,
     name: 'Skincare Set with Natural Ingredients',
+    description: 'Nourish your skin with this luxurious skincare set, formulated with natural and organic ingredients.',
     category: 'Beauty',
     price: 79.99,
     originalPrice: 99.00,
@@ -101,6 +109,7 @@ export const mockProducts: Product[] = [
   {
     id: 8,
     name: 'Ergonomic Office Chair',
+    description: 'Work in comfort with this ergonomic office chair, designed to provide optimal support and reduce fatigue.',
     category: 'Home & Garden',
     price: 249.99,
     rating: 4.5,
@@ -110,6 +119,7 @@ export const mockProducts: Product[] = [
   {
     id: 9,
     name: 'Wireless Gaming Mouse',
+    description: 'Gain the competitive edge with this high-performance wireless gaming mouse, featuring customizable buttons and precise tracking.',
     category: 'Electronics',
     brand: 'Samsung',
     price: 69.99,
@@ -120,6 +130,7 @@ export const mockProducts: Product[] = [
   {
     id: 10,
     name: 'Yoga Mat Premium',
+    description: 'Enhance your yoga practice with this premium yoga mat, offering superior grip and cushioning.',
     category: 'Sports',
     brand: 'Nike',
     price: 45.99,
@@ -130,6 +141,7 @@ export const mockProducts: Product[] = [
   {
     id: 11,
     name: 'Designer Jeans',
+    description: 'Elevate your style with these designer jeans, crafted from high-quality denim for a comfortable and flattering fit.',
     category: 'Clothing',
     brand: 'Adidas',
     price: 89.99,
@@ -142,6 +154,7 @@ export const mockProducts: Product[] = [
   {
     id: 12,
     name: 'Programming Book',
+    description: 'Master the art of programming with this comprehensive guide, suitable for beginners and experienced developers alike.',
     category: 'Books',
     price: 39.99,
     rating: 4.7,
@@ -151,6 +164,7 @@ export const mockProducts: Product[] = [
   {
     id: 13,
     name: 'Face Cream Anti-Aging',
+    description: 'Rejuvenate your skin with this advanced anti-aging face cream, reducing wrinkles and promoting a youthful glow.',
     category: 'Beauty',
     price: 59.99,
     rating: 4.3,
@@ -160,6 +174,7 @@ export const mockProducts: Product[] = [
   {
     id: 14,
     name: 'Garden Tools Set',
+    description: 'Equip yourself with this essential garden tools set, perfect for all your gardening needs.',
     category: 'Home & Garden',
     price: 79.99,
     rating: 4.4,
@@ -169,6 +184,7 @@ export const mockProducts: Product[] = [
   {
     id: 15,
     name: 'iPhone 15 Pro',
+    description: 'Experience the latest in mobile technology with the iPhone 15 Pro, featuring a stunning display and powerful camera.',
     category: 'Electronics',
     brand: 'Apple',
     price: 999.99,
