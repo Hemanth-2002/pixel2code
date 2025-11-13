@@ -19,9 +19,17 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
-  Paper,
   Divider,
+  Skeleton,
+  AppBar,
+  Toolbar,
+  Badge,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
 } from "@mui/material";
 import {
   Search,
@@ -29,10 +37,17 @@ import {
   ViewList,
   Favorite,
   FavoriteBorder,
+  ShoppingCart,
+  Close,
+  Delete,
+  Remove,
+  Add,
 } from "@mui/icons-material";
 import { mockProducts, categories, brands } from "../data/mockData";
+import { useCart } from "../context/CartContext";
 
 const Home: React.FC = () => {
+  const { cartItemCount } = useCart();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("relevance");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -42,6 +57,7 @@ const Home: React.FC = () => {
   const [minRating, setMinRating] = useState<number>(0);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [openCart, setOpenCart] = useState(false);
   const itemsPerPage = 9;
 
   const handleCategoryChange = (category: string) => {
@@ -122,6 +138,18 @@ const Home: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            E-commerce Store
+          </Typography>
+          <IconButton color="inherit" onClick={() => setOpenCart(true)}>
+            <Badge badgeContent={cartItemCount} color="secondary">
+              <ShoppingCart />
+            </Badge>
+          </IconButton>
+        </Toolbar>
+      </AppBar>
       <Container maxWidth="xl" sx={{ py: 3 }}>
         {/* Header */}
         <Box sx={{ mb: 3 }}>
@@ -466,6 +494,16 @@ const Home: React.FC = () => {
                         </Typography>
                       )}
                     </Box>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      fullWidth
+                      sx={{ mt: 2 }}
+                      onClick={() => addToCart(product)}
+                    >
+                      Add to Cart
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
@@ -487,6 +525,100 @@ const Home: React.FC = () => {
           </Box>
         </Box>
       </Container>
+
+      <Drawer anchor="right" open={openCart} onClose={() => setOpenCart(false)}>
+        <Box sx={{ width: 350 }} role="presentation">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 2,
+              borderBottom: "1px solid #e0e0e0",
+            }}
+          >
+            <Typography variant="h6">Shopping Cart</Typography>
+            <IconButton onClick={() => setOpenCart(false)}>
+              <Close />
+            </IconButton>
+          </Box>
+          <List>
+            {cartItems.length === 0 ? (
+              <ListItem>
+                <ListItemText primary="Your cart is empty" />
+              </ListItem>
+            ) : (
+              cartItems.map((item) => (
+                <ListItem
+                  key={item.id}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => removeFromCart(item.id)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  }
+                >
+                  <ListItemAvatar>
+                    <Avatar src={item.image} alt={item.name} />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.name}
+                    secondary={`$${item.price.toFixed(2)} x ${item.quantity}`}
+                  />
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      disabled={item.quantity === 1}
+                    >
+                      <Remove />
+                    </IconButton>
+                    <Typography variant="body2">{item.quantity}</Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Box>
+                </ListItem>
+              ))
+            )}
+          </List>
+          <Divider />
+          <Box sx={{ p: 2, display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="h6">Total:</Typography>
+            <Typography variant="h6">${cartTotal.toFixed(2)}</Typography>
+          </Box>
+          <Box sx={{ p: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={cartItems.length === 0}
+              onClick={() => {
+                alert("Proceed to checkout!");
+                setOpenCart(false);
+              }}
+            >
+              Checkout
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              sx={{ mt: 1 }}
+              onClick={clearCart}
+              disabled={cartItems.length === 0}
+            >
+              Clear Cart
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   );
 };
