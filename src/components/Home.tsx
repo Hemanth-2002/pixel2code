@@ -22,6 +22,7 @@ import {
   InputLabel,
   Paper,
   Divider,
+  Skeleton,
 } from "@mui/material";
 import {
   Search,
@@ -32,7 +33,44 @@ import {
 } from "@mui/icons-material";
 import { mockProducts, categories, brands } from "../data/mockData";
 
+const ProductCardSkeleton: React.FC<{ viewMode: "grid" | "list" }> = ({
+  viewMode,
+}) => {
+  return (
+    <Card
+      sx={{
+        height: "100%",
+        display: viewMode === "list" ? "flex" : "block",
+      }}
+    >
+      <Skeleton
+        variant="rectangular"
+        width={viewMode === "list" ? 150 : "100%"}
+        height={viewMode === "list" ? 150 : 200}
+      />
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Skeleton variant="text" width="60%" />
+        <Skeleton variant="text" height={20} />
+        <Skeleton variant="text" width="80%" />
+        <Skeleton variant="rectangular" width="40%" height={24} sx={{ mt: 1 }} />
+      </CardContent>
+    </Card>
+  );
+};
+
 const Home: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(mockProducts);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setProducts(mockProducts);
+      setLoading(false);
+    }, 1000); // Simulate 1 second loading time
+    return () => clearTimeout(timer);
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("relevance");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -66,7 +104,7 @@ const Home: React.FC = () => {
     );
   };
 
-  const filteredProducts = mockProducts.filter((product) => {
+  const filteredProducts = products.filter((product) => {
     const matchesSearch =
       searchTerm === "" ||
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -118,6 +156,7 @@ const Home: React.FC = () => {
     priceRange,
     minRating,
     sortBy,
+    products, // Add products to dependency array
   ]);
 
   return (
@@ -150,7 +189,7 @@ const Home: React.FC = () => {
             }}
           >
             <Typography variant="h6">
-              {filteredProducts.length} results
+              {products.length} results
               {searchTerm ? ` for "${searchTerm}"` : ""}
             </Typography>
 
@@ -356,119 +395,168 @@ const Home: React.FC = () => {
                 gap: 2,
               }}
             >
-              {paginatedProducts.map((product) => (
-                <Card
-                  key={product.id}
+            {loading ? (
+                // Loading Skeletons
+                Array.from(new Array(itemsPerPage)).map((_, index) => (
+                  <ProductCardSkeleton key={index} viewMode={viewMode} />
+                ))
+              ) : paginatedProducts.length === 0 ? (
+                // Empty State
+                <Box
                   sx={{
-                    height: "100%",
-                    position: "relative",
-                    transition: "all 0.3s ease-in-out",
-                    "&:hover": {
-                      transform: "translateY(-8px)",
-                      boxShadow: "0 12px 24px rgba(0,0,0,0.15)",
-                      "& .product-image": {
-                        transform: "scale(1.05)",
-                      },
-                      "& .favorite-button": {
-                        opacity: 1,
-                        transform: "scale(1.1)",
-                      },
-                      "& .discount-badge": {
-                        transform: "scale(1.1)",
-                      },
-                    },
+                    gridColumn: "1 / -1", // Span across all columns
+                    textAlign: "center",
+                    py: 4,
+                    color: "text.secondary",
                   }}
                 >
-                  {/* Discount Badge */}
-                  {product.discount && (
-                    <Chip
-                      label={`-${product.discount}%`}
-                      color="secondary"
-                      size="small"
-                      className="discount-badge"
+                  <Typography variant="h6" gutterBottom>
+                    No products found
+                  </Typography>
+                  <Typography variant="body1">
+                    Try adjusting your filters or clearing them.
+                  </Typography>
+                  {(selectedCategories.length > 0 ||
+                    selectedBrands.length > 0 ||
+                    priceRange[0] > 0 ||
+                    priceRange[1] < 1000 ||
+                    minRating > 0 ||
+                    searchTerm !== "") && (
+                    <Button
+                      variant="outlined"
+                      sx={{ mt: 2 }}
+                      onClick={() => {
+                        setSearchTerm("");
+                        setSelectedCategories([]);
+                        setSelectedBrands([]);
+                        setPriceRange([0, 1000]);
+                        setMinRating(0);
+                      }}
+                    >
+                      Clear All Filters
+                    </Button>
+                  )}
+                </Box>
+              ) : (
+                // Actual Product Cards
+                paginatedProducts.map((product) => (
+                  <Card
+                    key={product.id}
+                    sx={{
+                      height: "100%",
+                      position: "relative",
+                      transition: "all 0.3s ease-in-out",
+                      "&:hover": {
+                        transform: "translateY(-8px)",
+                        boxShadow: "0 12px 24px rgba(0,0,0,0.15)",
+                        "& .product-image": {
+                          transform: "scale(1.05)",
+                        },
+                        "& .favorite-button": {
+                          opacity: 1,
+                          transform: "scale(1.1)",
+                        },
+                        "& .discount-badge": {
+                          transform: "scale(1.1)",
+                        },
+                      },
+                    }}
+                  >
+                    {/* Discount Badge */}
+                    {product.discount && (
+                      <Chip
+                        label={`-${product.discount}%`}
+                        color="secondary"
+                        size="small"
+                        className="discount-badge"
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          left: 8,
+                          zIndex: 1,
+                          transition: "transform 0.3s ease-in-out",
+                        }}
+                      />
+                    )}
+
+                    {/* Favorite Button */}
+                    <IconButton
+                      className="favorite-button"
                       sx={{
                         position: "absolute",
                         top: 8,
-                        left: 8,
+                        right: 8,
                         zIndex: 1,
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
+                        opacity: 0.7,
+                        transition: "all 0.3s ease-in-out",
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        },
+                      }}
+                      onClick={() => toggleFavorite(product.id)}
+                    >
+                      {favorites.includes(product.id) ? (
+                        <Favorite color="error" />
+                      ) : (
+                        <FavoriteBorder />
+                      )}
+                    </IconButton>
+
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={product.image}
+                      alt={product.name}
+                      className="product-image"
+                      sx={{
                         transition: "transform 0.3s ease-in-out",
+                        overflow: "hidden",
                       }}
                     />
-                  )}
 
-                  {/* Favorite Button */}
-                  <IconButton
-                    className="favorite-button"
-                    sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      zIndex: 1,
-                      backgroundColor: "rgba(255, 255, 255, 0.8)",
-                      opacity: 0.7,
-                      transition: "all 0.3s ease-in-out",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 0.95)",
-                      },
-                    }}
-                    onClick={() => toggleFavorite(product.id)}
-                  >
-                    {favorites.includes(product.id) ? (
-                      <Favorite color="error" />
-                    ) : (
-                      <FavoriteBorder />
-                    )}
-                  </IconButton>
+                    <CardContent>
+                      <Chip
+                        label={product.category}
+                        size="small"
+                        sx={{ mb: 1 }}
+                      />
 
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={product.image}
-                    alt={product.name}
-                    className="product-image"
-                    sx={{
-                      transition: "transform 0.3s ease-in-out",
-                      overflow: "hidden",
-                    }}
-                  />
-
-                  <CardContent>
-                    <Chip
-                      label={product.category}
-                      size="small"
-                      sx={{ mb: 1 }}
-                    />
-
-                    <Typography variant="h6" component="h3" sx={{ mb: 1 }}>
-                      {product.name}
-                    </Typography>
-
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Rating value={product.rating} readOnly size="small" />
-                      <Typography variant="body2" sx={{ ml: 1 }}>
-                        ({product.reviewCount})
+                      <Typography variant="h6" component="h3" sx={{ mb: 1 }}>
+                        {product.name}
                       </Typography>
-                    </Box>
 
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Typography variant="h6" color="primary">
-                        ${product.price}
-                      </Typography>
-                      {product.originalPrice && (
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            textDecoration: "line-through",
-                            color: "text.secondary",
-                          }}
-                        >
-                          ${product.originalPrice}
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      >
+                        <Rating value={product.rating} readOnly size="small" />
+                        <Typography variant="body2" sx={{ ml: 1 }}>
+                          ({product.reviewCount})
                         </Typography>
-                      )}
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
+                      </Box>
+
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <Typography variant="h6" color="primary">
+                          ${product.price}
+                        </Typography>
+                        {product.originalPrice && (
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              textDecoration: "line-through",
+                              color: "text.secondary",
+                            }}
+                          >
+                            ${product.originalPrice}
+                          </Typography>
+                        )}
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </Box>
 
             {/* Pagination */}
